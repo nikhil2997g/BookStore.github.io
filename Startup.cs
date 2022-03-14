@@ -24,6 +24,10 @@ namespace BookStore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+#if DEBUG
+            //by adding above condition we can use reloading views only during Development
+            services.AddRazorPages().AddRazorRuntimeCompilation();
+#endif
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -8,10 +8,22 @@ namespace BookStore.Controllers
 {
     public class HomeController : Controller
     {
-        public string Index()
+        public ViewResult Index()
         {
-            //return View();
-            return "Hello from Controller";
+            
+            return View();
+        }
+
+        public ViewResult Aboutus()
+        {
+            
+            return View();
+        }
+
+        public ViewResult Contactus()
+        {
+           
+            return View();
         }
     }
 }
