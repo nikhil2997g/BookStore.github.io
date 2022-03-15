@@ -8,9 +8,11 @@ namespace BookStore.Controllers
 {
     public class HomeController : Controller
     {
+        [ViewData]
+        public string Title { get; set; }
         public ViewResult Index()
         {
-            
+            Title = "Home";
             return View();
         }
 

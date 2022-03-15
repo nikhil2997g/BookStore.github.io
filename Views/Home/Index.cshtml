@@ -1,6 +1,6 @@
-﻿@{ 
-    Layout = "_Layout";
-}
+﻿@*@{ 
+    ViewData["Title"] = "Home";
+}*@
     
 
 <section class="jumbotron text-center" style="background-color: #c29591">
@@ -70,6 +70,14 @@
         </div>
     </div>
 </div>
+
+@section scripts{ 
+    <script>
+        $(document).ready(function () {
+            //alert("The document is ready");
+        });
+    </script>
+}
 
 
 

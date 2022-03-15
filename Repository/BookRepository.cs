@@ -27,9 +27,9 @@ namespace BookStore.Repository
         {
             return new List<BookModel>()
             {
-                new BookModel(){Id = 1, Title = "MVC", Author = "Nithish" },
-                new BookModel(){Id = 2, Title = "dot net core", Author = "Nithish" },
-                new BookModel(){Id = 3, Title = "java", Author = "authorj" }
+                new BookModel(){Id = 1, Title = "MVC", Author = "Nithish", Description = "This is Description for MVC Book", Category = "Framework", Language = "English", TotalPages = 897 },
+                new BookModel(){Id = 2, Title = "Dot net core", Author = "Nithish", Description = "This is Description for dot net core Book", Category = "Development", Language = "English", TotalPages = 597 },
+                new BookModel(){Id = 3, Title = "Java", Author = "authorj", Description = "This is Description for java Book", Category = "Programming", Language = "English", TotalPages = 397 }
             };
         }
     }
