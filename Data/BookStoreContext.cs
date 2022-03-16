@@ -14,7 +14,7 @@ namespace BookStore.Data
 
         public DbSet<Books> books { get; set; }
 
-
+        //public DbSet<Language> languages { get; set; }
         //if we write configuration in startup.cs file using services we dont need below code
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{

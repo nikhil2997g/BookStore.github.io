@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BookStore.Data;
 using Microsoft.EntityFrameworkCore;
+using BookStore.Repository;
 
 namespace BookStore
 {
@@ -31,6 +32,7 @@ namespace BookStore
             services.AddRazorPages().AddRazorRuntimeCompilation();
 #endif
             services.AddDbContext<BookStoreContext>(options => options.UseSqlServer("server=DESKTOP-A8DQRPT\\SQLEXPRESS; Initial Catalog=BookStore; Integrated Security = true"));
+            services.AddScoped<BookRepository, BookRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
