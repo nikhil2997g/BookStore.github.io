@@ -1,4 +1,5 @@
 ﻿using BookStore.Enums;
+using BookStore.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,8 +11,9 @@ namespace BookStore.Models
     public class BookModel
     {
         public int Id { get; set; }
-        [StringLength(100, MinimumLength =5)]
-        [Required(ErrorMessage = "Please Enter the Title of your Book")]
+        //[StringLength(100, MinimumLength =5)]
+        //[Required(ErrorMessage = "Please Enter the Title of your Book")]
+        [myCustomValidation("mvc")]
         public string Title { get; set; }
 
         [Required(ErrorMessage = "Please Enter the Author Name")]
@@ -20,15 +22,18 @@ namespace BookStore.Models
         [StringLength(500)]
         public string Description { get; set; }
         public string Category { get; set; }
-        //[Display(Name = "Language")]
-        //public string Language { get; set; }
+
+        [Display(Name = "Language")]
+        [Required(ErrorMessage = "Please Choose the Language")]
+        public int? LanguageId { get; set; }
+        public string Language { get; set; }
 
         [Display(Name = "Total Pages of Book")]
         [Required(ErrorMessage = "Please Enter the Total Pages of your Book")]
         public int? TotalPages { get; set; }
 
-        [Display(Name = "Language")]
-        [Required]
-        public LanguageEnum LanguageEnum { get; set; }
+        //[Display(Name = "Language")]
+        //[Required]
+        //public LanguageEnum LanguageEnum { get; set; }
     }
 }

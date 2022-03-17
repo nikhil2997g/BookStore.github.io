@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BookStore.Data
+namespace BookStore.Models
 {
-    public class Language
+    public class LanguageModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public ICollection<Books> Books { get; set; }
     }
 }

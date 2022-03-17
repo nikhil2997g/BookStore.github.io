@@ -45,11 +45,11 @@
                     <span asp-validation-for="Category" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="LanguageEnum" class="control-label"></label>
-                    <select  asp-for="LanguageEnum" class="form-control" asp-items="Html.GetEnumSelectList<LanguageEnum>()">
+                    <label asp-for="LanguageId" class="control-label"></label>
+                    <select id="ddlLanguages" asp-for="LanguageId" class="form-control" asp-items="ViewBag.Language">
                         <option value="">Please Choose Your Language</option>
-                        </select>
-                    <span asp-validation-for="LanguageEnum" class="text-danger"></span>
+                    </select>
+                    <span asp-validation-for="LanguageId" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="TotalPages" class="control-label"></label>
@@ -77,6 +77,17 @@
 </div>
 
 @*<div>
-    <a asp-action="Index">Back to List</a>
-</div>*@
+        <a asp-action="Index">Back to List</a>
+    </div>*@
+@section scripts{
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" />
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#ddlLanguages").select2();
+        });
+    </script>
+}

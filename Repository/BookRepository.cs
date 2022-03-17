@@ -25,7 +25,7 @@ namespace BookStore.Repository
                 CreatedOn = DateTime.UtcNow,
                 Description = model.Description,
                 Title = model.Title,
-                LanguageEnum = model.LanguageEnum,
+                LanguageId = (int)model.LanguageId,
                 TotalPages = model.TotalPages.HasValue ? model.TotalPages.Value : 0,
                 UpdatedOn = DateTime.UtcNow
             };
@@ -49,7 +49,8 @@ namespace BookStore.Repository
                         Category = book.Category,
                         Description = book.Description,
                         Id = book.Id,
-                        LanguageEnum = book.LanguageEnum,
+                        LanguageId = book.LanguageId,
+                        Language = book.Language.Name,
                         Title = book.Title,
                         TotalPages = book.TotalPages
                     });
@@ -60,23 +61,18 @@ namespace BookStore.Repository
 
         public async Task<BookModel> GetBookbyId(int id)
         {
-            var book = await _context.books.FindAsync(id);
-            //return _context.books.Where(b => b.Id == id).FirstOrDefaultAsync();
-            if (book != null)
+            return await _context.books.Where(b => b.Id == id).Select(book => new BookModel()
             {
-                var bookDetails = new BookModel()
-                {
-                    Author = book.Author,
-                    Category = book.Category,
-                    Description = book.Description,
-                    Id = book.Id,
-                    LanguageEnum = book.LanguageEnum,
-                    Title = book.Title,
-                    TotalPages = book.TotalPages
-                };
-                return bookDetails;
-            }
-            return null;
+                Author = book.Author,
+                Category = book.Category,
+                Description = book.Description,
+                Id = book.Id,
+                LanguageId = book.LanguageId,
+                Language = book.Language.Name,
+                Title = book.Title,
+                TotalPages = book.TotalPages
+            }).FirstOrDefaultAsync();
+
         }
 
         public List<BookModel> SearchBooks(string title, string author)

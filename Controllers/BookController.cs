@@ -1,6 +1,7 @@
 ﻿using BookStore.Models;
 using BookStore.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,12 @@ namespace BookStore.Controllers
     public class BookController : Controller
     {
         private BookRepository _bookRepository = null;
+        private LanguageRepository _languageRepository = null;
 
-        public BookController(BookRepository bookRepository)
+        public BookController(BookRepository bookRepository, LanguageRepository languageRepository)
         {
             _bookRepository = bookRepository;
+            _languageRepository = languageRepository;
         }
 
         public async Task<ViewResult> GetAllBooks()
@@ -34,10 +37,12 @@ namespace BookStore.Controllers
             return _bookRepository.SearchBooks(title,author);
         }
 
-        public ViewResult AddNewBook(bool isSuccess = false, int bookId = 0)
+        public async Task<ViewResult> AddNewBook(bool isSuccess = false, int bookId = 0)
         {
             ViewBag.IsSuccess = isSuccess;
             ViewBag.BookId = bookId;
+
+            ViewBag.Language = new SelectList(await _languageRepository.GetLanguages(), "Id", "Name");
             return View();
         }
 
@@ -52,7 +57,8 @@ namespace BookStore.Controllers
                     return RedirectToAction(nameof(AddNewBook), new { isSuccess = true, bookID = id });
                 }
             }
-           
+
+            ViewBag.Language = new SelectList(await _languageRepository.GetLanguages(), "Id", "Name");
             return View();
         }
     }

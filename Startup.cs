@@ -33,6 +33,7 @@ namespace BookStore
 #endif
             services.AddDbContext<BookStoreContext>(options => options.UseSqlServer("server=DESKTOP-A8DQRPT\\SQLEXPRESS; Initial Catalog=BookStore; Integrated Security = true"));
             services.AddScoped<BookRepository, BookRepository>();
+            services.AddScoped<LanguageRepository, LanguageRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
