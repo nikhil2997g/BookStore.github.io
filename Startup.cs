@@ -30,6 +30,11 @@ namespace BookStore
 #if DEBUG
             //by adding above condition we can use reloading views only during Development
             services.AddRazorPages().AddRazorRuntimeCompilation();
+              
+            //uncomment this code to disable client side validations
+            //    .AddViewOptions(options => {
+            //    options.HtmlHelperOptions.ClientValidationEnabled = false;
+            //});
 #endif
             services.AddDbContext<BookStoreContext>(options => options.UseSqlServer("server=DESKTOP-A8DQRPT\\SQLEXPRESS; Initial Catalog=BookStore; Integrated Security = true"));
             services.AddScoped<BookRepository, BookRepository>();
