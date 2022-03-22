@@ -41,6 +41,17 @@ namespace BookStore.Models
         public IFormFile CoverPhoto { get; set; }
         public string CoverImageUrl { get; set; }
 
+        [Display(Name = "Choose the gallery images of your Book")]
+        [Required(ErrorMessage = "Please Choose your gallery images")]
+        public IFormFileCollection GalleryFiles { get; set; }
+
+        public List<GalleryModel> Gallery { get; set; }
+
+        [Display(Name = "Choose the Pdf File of your Book")]
+        [Required(ErrorMessage = "Please Choose your File")]
+        public IFormFile BookPdf { get; set; }
+        public string BookPdfUrl { get; set; }
+
         //[Display(Name = "Language")]
         //[Required]
         //public LanguageEnum LanguageEnum { get; set; }

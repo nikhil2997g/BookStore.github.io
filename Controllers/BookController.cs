@@ -1,6 +1,7 @@
 ﻿using BookStore.Models;
 using BookStore.Repository;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -11,13 +12,14 @@ using System.Threading.Tasks;
 
 namespace BookStore.Controllers
 {
+    [Route("[controller]/[action]")]
     public class BookController : Controller
     {
-        private BookRepository _bookRepository = null;
-        private LanguageRepository _languageRepository = null;
+        private IBookRepository _bookRepository = null;
+        private ILanguageRepository _languageRepository = null;
         private IWebHostEnvironment _webHostEnvironment = null;
 
-        public BookController(BookRepository bookRepository, LanguageRepository languageRepository, IWebHostEnvironment webHostEnvironment)
+        public BookController(IBookRepository bookRepository, ILanguageRepository languageRepository, IWebHostEnvironment webHostEnvironment)
         {
             _bookRepository = bookRepository;
             _languageRepository = languageRepository;
@@ -30,6 +32,7 @@ namespace BookStore.Controllers
             return View(data);
         }
 
+        [Route("book-details/{id:int:min(1)}", Name = "bookDetailsRoute")]
         public async Task<ViewResult> GetBook(int id)
         {
             var data = await _bookRepository.GetBookbyId(id);
@@ -46,7 +49,7 @@ namespace BookStore.Controllers
             ViewBag.IsSuccess = isSuccess;
             ViewBag.BookId = bookId;
 
-            ViewBag.Language = new SelectList(await _languageRepository.GetLanguages(), "Id", "Name");
+            //ViewBag.Language = new SelectList(await _languageRepository.GetLanguages(), "Id", "Name");
             return View();
         }
 
@@ -57,16 +60,35 @@ namespace BookStore.Controllers
             {
                 if (bookModel.CoverPhoto != null)
                 {
-                    string folder = "books/Cover/";
-                    folder += Guid.NewGuid().ToString() + bookModel.CoverPhoto.FileName;
+                    string folder = "books/cover/";
+                    bookModel.CoverImageUrl = await UploadImage(folder, bookModel.CoverPhoto);
 
-                    //for storing image url in database i have created CoverImageUrl property in BookModel and assigned it to folder.
-                    bookModel.CoverImageUrl = "/" + folder;
-
-                    string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
-
-                   await bookModel.CoverPhoto.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
                 }
+
+                if (bookModel.GalleryFiles != null)
+                {
+                    string folder = "books/gallery/";
+
+                    bookModel.Gallery = new List<GalleryModel>();
+
+                    foreach (var file in bookModel.GalleryFiles)
+                    {
+                        var gallery = new GalleryModel()
+                        {
+                            Name = file.FileName,
+                            URL = await UploadImage(folder, file)
+                        };
+                        bookModel.Gallery.Add(gallery);
+                    }
+                }
+
+                if (bookModel.BookPdf != null)
+                {
+                    string folder = "books/pdf/";
+                    bookModel.CoverImageUrl = await UploadImage(folder, bookModel.BookPdf);
+
+                }
+
                 int id = await _bookRepository.AddNewBook(bookModel);
                 if (id > 0)
                 {
@@ -74,8 +96,23 @@ namespace BookStore.Controllers
                 }
             }
 
-            ViewBag.Language = new SelectList(await _languageRepository.GetLanguages(), "Id", "Name");
+            //ViewBag.Language = new SelectList(await _languageRepository.GetLanguages(), "Id", "Name");
             return View();
+        }
+
+        private async Task<string> UploadImage(string folderPath, IFormFile file)
+        {
+            
+            folderPath += Guid.NewGuid().ToString() + "_" + file.FileName;
+
+            //for storing image url in database i have created CoverImageUrl property in BookModel and assigned it to folder.
+            
+
+            string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folderPath);
+
+            await file.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
+
+            return "/" + folderPath;
         }
     }
 }

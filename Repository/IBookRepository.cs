@@ -1,17 +1,16 @@
 ﻿using BookStore.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BookStore.Repository
 {
     public interface IBookRepository
     {
-        BookModel GetBookbyId(int id);
-        IEnumerable<BookModel> GetAllBooks();
-        BookModel AddBook(BookModel bookModel);
-        BookModel Update(BookModel bookchanges);
-        BookModel Delete(int id);
+        Task<int> AddNewBook(BookModel model);
+        Task<List<BookModel>> GetAllBooks();
+        Task<BookModel> GetBookbyId(int id);
+        Task<List<BookModel>> GetTopBooksAsync(int count);
+        List<BookModel> SearchBooks(string title, string author);
+        string GetAppName();
     }
 }
