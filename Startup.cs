@@ -14,6 +14,7 @@ using BookStore.Repository;
 using Microsoft.AspNetCore.Identity;
 using BookStore.Models;
 using BookStore.Helpers;
+using BookStore.Service;
 
 namespace BookStore
 {
@@ -61,6 +62,7 @@ namespace BookStore
             services.AddScoped<IBookRepository, BookRepository>();
             services.AddScoped<ILanguageRepository, LanguageRepository>();
             services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<IUserService, UserService>();
 
             //for adding claims in order have our firstname or lastname or profilelink we use below service along with ApplicationUserClaimsPrincipalFactory class from helpers folder
             services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
@@ -90,6 +92,10 @@ namespace BookStore
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
+
+                endpoints.MapControllerRoute(
+                    name: "MyArea",
+                    pattern: "{area:exists}/{controller=Admin}/{action=CreateRole}/{id?}");
             });
         }
     }

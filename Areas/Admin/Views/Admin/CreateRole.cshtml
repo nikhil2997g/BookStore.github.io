@@ -1,0 +1,36 @@
+﻿@using BookStore.Areas.Admin.Models
+@model CreateRoleViewModel
+
+@{
+    ViewData["Title"] = "Create Roles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+<div class="container mt-2 mb-2">
+    <h4>Create New Role</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4" style="background-color:lightpink; border-radius:15px; padding:20px">
+            <form asp-action="CreateRole">
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="d-flex flex-row align-items-center mb-4">
+                    <div class="form-outline flex-fill mb-0">
+                        <label asp-for="RoleName" class="control-label"></label>
+                        <input asp-for="RoleName" class="form-control" placeholder="Role Name" />
+                        <span asp-validation-for="RoleName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="text-center text-lg-start mt-4 pt-2">
+                    <input type="submit" value="Create Role" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+
+
+    </div>
+</div>
