@@ -12,5 +12,6 @@ namespace BookStore.Repository
         Task<List<BookModel>> GetTopBooksAsync(int count);
         List<BookModel> SearchBooks(string title, string author);
         string GetAppName();
+        Task<int> UpdateBook(BookModel model);
     }
 }

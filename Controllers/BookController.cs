@@ -40,12 +40,14 @@ namespace BookStore.Controllers
             return View(data);
         }
 
+       
+
         public List<BookModel> SearchBooks(string title, string author)
         {
             return _bookRepository.SearchBooks(title,author);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ViewResult> AddNewBook(bool isSuccess = false, int bookId = 0)
         {
             ViewBag.IsSuccess = isSuccess;
@@ -87,7 +89,7 @@ namespace BookStore.Controllers
                 if (bookModel.BookPdf != null)
                 {
                     string folder = "books/pdf/";
-                    bookModel.CoverImageUrl = await UploadImage(folder, bookModel.BookPdf);
+                    bookModel.BookPdfUrl = await UploadImage(folder, bookModel.BookPdf);
 
                 }
 
@@ -102,6 +104,23 @@ namespace BookStore.Controllers
             return View();
         }
 
+
+        public async Task<ViewResult> EditBook(int id)
+        {
+            var data = await _bookRepository.GetBookbyId(id);
+            return View(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditBook(BookModel bookModel)
+        {
+            var isUpdated = await _bookRepository.GetBookbyId(bookModel.Id);
+            return View(bookModel);
+        }
+
+
+
+
         private async Task<string> UploadImage(string folderPath, IFormFile file)
         {
             
@@ -112,7 +131,11 @@ namespace BookStore.Controllers
 
             string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folderPath);
 
-            await file.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
+            using(var filepath = new FileStream(serverFolder, FileMode.Create))
+            {
+                await file.CopyToAsync(filepath);
+            }
+            
 
             return "/" + folderPath;
         }

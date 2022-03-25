@@ -1,0 +1,114 @@
+﻿@inject BookStore.Repository.ILanguageRepository _languageRepo
+@using BookStore.Enums
+@model BookModel
+
+@{
+    ViewData["Title"] = "Edit Book";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mb-3" style="background-color:lightpink; border-radius:15px">
+    <h1>Edit Book</h1>
+    <hr />
+    @if (ViewBag.IsSuccess == true)
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Congratulations</strong> You have added the Book Successfully. <br />
+                Click <a asp-controller="Book" asp-action="GetBook" asp-route-id="@ViewBag.BookId">here</a> to View Details
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4 ">
+            <form method="post" enctype="multipart/form-data" asp-action="EditBook" asp-controller="Book">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input hidden asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Author" class="control-label"></label>
+                    <input asp-for="Author" class="form-control" />
+                    <span asp-validation-for="Author" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <textarea asp-for="Description" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Category" class="control-label"></label>
+                    <input asp-for="Category" class="form-control" />
+                    <span asp-validation-for="Category" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LanguageId" class="control-label"></label>
+                    <select id="ddlLanguages" asp-for="LanguageId" class="form-control" asp-items="(await _languageRepo.GetLanguages()).Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() })">
+                        <option value="">Please Choose Your Language</option>
+                    </select>
+                    <span asp-validation-for="LanguageId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TotalPages" class="control-label"></label>
+                    <input asp-for="TotalPages" class="form-control" />
+                    <span asp-validation-for="TotalPages" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CoverPhoto" class="control-label"></label>
+                    <div class="custom-file">
+                        <input asp-for="CoverPhoto" class="form-control custom-file" id="customFile" />
+                        <label for="formFile" class="form-label"></label>
+                    </div>
+                    <span asp-validation-for="CoverPhoto" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="GalleryFiles" class="control-label"></label>
+                    <div class="custom-file">
+                        <input asp-for="GalleryFiles" class="form-control custom-file" id="customFile" />
+                        <label for="formFile" class="form-label"></label>
+                    </div>
+                    <span asp-validation-for="GalleryFiles" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="BookPdf" class="control-label"></label>
+                    <div class="custom-file">
+                        <input asp-for="BookPdf" class="form-control custom-file" id="customFile" />
+                        <label for="formFile" class="form-label"></label>
+                    </div>
+                    <span asp-validation-for="BookPdf" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mt-2 mb-2">
+                    <input type="submit" value="Update Book" class="btn btn-primary" />
+                    <a asp-controller="Book" asp-action="GetAllBooks" class="btn btn-primary">Cancel</a>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
+
+@*<div>
+        <a asp-action="Index">Back to List</a>
+    </div>*@
+@section scripts{
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" />
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#ddlLanguages").select2();
+        });
+    </script>
+}

@@ -24,6 +24,7 @@ namespace BookStore.Repository
                 Author = model.Author,
                 CreatedOn = DateTime.UtcNow,
                 Description = model.Description,
+                Category = model.Category,
                 Title = model.Title,
                 LanguageId = (int)model.LanguageId,
                 TotalPages = model.TotalPages.HasValue ? model.TotalPages.Value : 0,
@@ -48,27 +49,19 @@ namespace BookStore.Repository
         }
         public async Task<List<BookModel>> GetAllBooks()
         {
-            var books = new List<BookModel>();
-            var allbooks = await _context.books.ToListAsync();
-            if (allbooks?.Any() == true)
+
+            return await _context.books.Select(book => new BookModel()
             {
-                foreach (var book in allbooks)
-                {
-                    books.Add(new BookModel()
-                    {
-                        Author = book.Author,
-                        Category = book.Category,
-                        Description = book.Description,
-                        Id = book.Id,
-                        LanguageId = book.LanguageId,
-                        Language = book.Language.Name,
-                        Title = book.Title,
-                        TotalPages = book.TotalPages,
-                        CoverImageUrl = book.CoverImageUrl
-                    });
-                }
-            }
-            return books;
+                Author = book.Author,
+                Category = book.Category,
+                Description = book.Description,
+                Id = book.Id,
+                LanguageId = book.LanguageId,
+                Language = book.Language.Name,
+                Title = book.Title,
+                TotalPages = book.TotalPages,
+                CoverImageUrl = book.CoverImageUrl
+            }).ToListAsync();
         }
 
         public async Task<BookModel> GetBookbyId(int id)
@@ -121,5 +114,27 @@ namespace BookStore.Repository
         {
             return "Book Store";
         }
+
+        public async Task<int> UpdateBook(BookModel model)
+        {
+            var newbook =  _context.books.Where(b => b.Id == model.Id).Select(book => new BookModel()
+            {
+                Author = model.Author,
+               
+                Description = model.Description,
+                Category = model.Category,
+                Title = model.Title,
+                LanguageId = (int)model.LanguageId,
+                TotalPages = model.TotalPages.HasValue ? model.TotalPages.Value : 0,
+               
+                CoverImageUrl = model.CoverImageUrl,
+                BookPdfUrl = model.BookPdfUrl
+            });
+
+             var result = _context.Entry(model).State = EntityState.Modified;
+              _context.SaveChanges();
+            return (int)result;
+        }
+        
     }
 }

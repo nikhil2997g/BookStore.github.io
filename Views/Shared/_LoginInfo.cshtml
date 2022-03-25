@@ -1,5 +1,18 @@
 ﻿@inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> _signInManager
 
+@if (_signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+{
+    <li class="nav-item">
+        <a asp-area="Admin" asp-controller="Admin" asp-action="ListRoles" class="nav-link">
+            Manage Roles
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-info" asp-controller="Book" asp-action="AddNewBook">Add New Book</a>
+    </li>
+}
+
+
 @if (_signInManager.IsSignedIn(User))
 {
     <div class="dropdown">
