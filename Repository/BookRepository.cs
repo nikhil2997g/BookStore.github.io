@@ -86,6 +86,7 @@ namespace BookStore.Repository
                 BookPdfUrl = book.BookPdfUrl
             }).FirstOrDefaultAsync();
 
+
         }
 
         public async Task<List<BookModel>> GetTopBooksAsync(int count)
@@ -117,23 +118,40 @@ namespace BookStore.Repository
 
         public async Task<int> UpdateBook(BookModel model)
         {
-            var newbook =  _context.books.Where(b => b.Id == model.Id).Select(book => new BookModel()
-            {
-                Author = model.Author,
-               
-                Description = model.Description,
-                Category = model.Category,
-                Title = model.Title,
-                LanguageId = (int)model.LanguageId,
-                TotalPages = model.TotalPages.HasValue ? model.TotalPages.Value : 0,
-               
-                CoverImageUrl = model.CoverImageUrl,
-                BookPdfUrl = model.BookPdfUrl
-            });
+            //BookModel updatedBook = _bookRepository.GetBookbyId(model.Id);
+            var uBook = _context.books.Where(b => b.Id == model.Id).FirstOrDefault();/*.(book => new BookModel()*/
 
-             var result = _context.Entry(model).State = EntityState.Modified;
-              _context.SaveChanges();
-            return (int)result;
+            uBook.Author = model.Author;
+
+            uBook.Description = model.Description;
+            uBook.Category = model.Category;
+            uBook.Title = model.Title;
+            uBook.LanguageId = (int)model.LanguageId;
+            uBook.TotalPages = model.TotalPages.HasValue ? model.TotalPages.Value : 0;
+            uBook.CoverImageUrl = model.CoverImageUrl;
+            uBook.BookPdfUrl = model.BookPdfUrl;
+            uBook.bookGallery = new List<BookGallery>();
+            foreach (var file in model.Gallery)
+            {
+                uBook.bookGallery.Select(g => new GalleryModel()
+                {
+                    Name = file.Name,
+                    URL = file.URL
+                });
+            }
+
+
+            var bookModel = _context.books.Attach(uBook);
+            bookModel.State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return uBook.Id;
+
+
+            
+
+            // var result = _context.Entry(model).State = EntityState.Modified;
+            //  _context.SaveChanges();
+            //return (int)result;
         }
         
     }

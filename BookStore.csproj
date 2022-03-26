@@ -5,6 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Models\ApplicationUser.cs" />
+    <Content Remove="Models\BookModel.cs" />
+    <Content Remove="Models\ChangePasswordModel.cs" />
+    <Content Remove="Models\GalleryModel.cs" />
+    <Content Remove="Models\LanguageModel.cs" />
+    <Content Remove="Models\NewBookAlertConfig.cs" />
+    <Content Remove="Models\SignInModel.cs" />
+    <Content Remove="Models\SignUpUserModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="wwwroot\books\Cover\" />
     <Folder Include="wwwroot\books\gallery\" />

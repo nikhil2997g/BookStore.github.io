@@ -1,4 +1,5 @@
-﻿using BookStore.Models;
+﻿using BookStore.Data;
+using BookStore.Models;
 using BookStore.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -108,14 +109,96 @@ namespace BookStore.Controllers
         public async Task<ViewResult> EditBook(int id)
         {
             var data = await _bookRepository.GetBookbyId(id);
-            return View(data);
+            var bookEdit = new BookModel()
+            {
+                Id = data.Id,
+                Author = data.Author,
+                Category = data.Category,
+                Description = data.Description,
+                LanguageId = data.LanguageId,
+                Title = data.Title,
+                TotalPages = data.TotalPages,
+                existingCoverImagePath = data.CoverImageUrl,
+                //existingGalleryImagePath = data.g,
+                existingBookPdfPath = data.BookPdfUrl
+            };
+            return View(bookEdit);
         }
 
         [HttpPost]
         public async Task<IActionResult> EditBook(BookModel bookModel)
         {
-            var isUpdated = await _bookRepository.GetBookbyId(bookModel.Id);
-            return View(bookModel);
+            if (ModelState.IsValid)
+            {
+                if (bookModel.CoverPhoto != null)
+                {
+                    string folder = "books/cover/";
+
+                    if (bookModel.existingCoverImagePath != null)
+                    {
+                        string filePath = Path.Combine(_webHostEnvironment.WebRootPath, folder, bookModel.existingCoverImagePath);
+                        if ((System.IO.File.Exists(filePath)))
+                        {
+                            System.IO.File.Delete(filePath);
+                        }
+                        
+                        
+                    }
+
+                    bookModel.CoverImageUrl = await UploadImage(folder, bookModel.CoverPhoto);
+
+                }
+
+                if (bookModel.GalleryFiles != null)
+                {
+                    string folder = "books/gallery/";
+
+                    //if (bookModel.existingGalleryImagePath != null)
+                    //{
+                    //    string filePath = Path.Combine(_webHostEnvironment.WebRootPath, folder, bookModel.existingGalleryImagePath);
+                    //    System.IO.File.Delete(filePath);
+                    //}
+
+                    bookModel.Gallery = new List<GalleryModel>();
+
+                    foreach (var file in bookModel.GalleryFiles)
+                    {
+                        var gallery = new GalleryModel()
+                        {
+                            Name = file.FileName,
+                            URL = await UploadImage(folder, file)
+                        };
+                        bookModel.Gallery.Add(gallery);
+                    }
+                }
+
+                if (bookModel.BookPdf != null)
+                {
+                    string folder = "books/pdf/";
+
+                    if (bookModel.existingBookPdfPath != null)
+                    {
+                        string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "books/pdf/", bookModel.existingBookPdfPath);
+                        if ((System.IO.File.Exists(filePath)))
+                        {
+                            System.IO.File.Delete(filePath);
+                        }
+                        
+                    }
+
+                    bookModel.BookPdfUrl = await UploadImage(folder, bookModel.BookPdf);
+
+                }
+
+                int id = await _bookRepository.UpdateBook(bookModel);
+                if (id > 0)
+                {
+                    return RedirectToAction(nameof(EditBook), new { isSuccess = true, bookID = id });
+                }
+            }
+
+            
+            return View();
         }
 
 
@@ -131,10 +214,9 @@ namespace BookStore.Controllers
 
             string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folderPath);
 
-            using(var filepath = new FileStream(serverFolder, FileMode.Create))
-            {
-                await file.CopyToAsync(filepath);
-            }
+           
+                await file.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
+         
             
 
             return "/" + folderPath;

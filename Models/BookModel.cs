@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BookStore.Models
 {
-    public class BookModel
+    public class BookModel 
     {
         public int Id { get; set; }
         [StringLength(100, MinimumLength =5)]
@@ -51,6 +51,11 @@ namespace BookStore.Models
         [Required(ErrorMessage = "Please Choose your File")]
         public IFormFile BookPdf { get; set; }
         public string BookPdfUrl { get; set; }
+
+        public string existingCoverImagePath { get; set; }
+        public string existingGalleryImagePath { get; set; }
+        public string existingBookPdfPath { get; set; }
+
 
         //[Display(Name = "Language")]
         //[Required]

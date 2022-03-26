@@ -1,0 +1,7 @@
+﻿@inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> _signInManager
+
+@if (_signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+{
+    <a asp-controller="Book" asp-action="EditBook" asp-route-id="@Model.Id" class="btn btn-primary m-1">Edit</a>
+    <a href="#" class="btn btn-primary m-1">Delete</a>
+}
