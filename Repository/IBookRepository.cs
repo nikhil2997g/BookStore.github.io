@@ -1,4 +1,5 @@
 ﻿using BookStore.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,5 +14,6 @@ namespace BookStore.Repository
         List<BookModel> SearchBooks(string title, string author);
         string GetAppName();
         Task<int> UpdateBook(BookModel model);
+        Task<int> Delete(int id);
     }
 }

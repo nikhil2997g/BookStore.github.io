@@ -1,5 +1,6 @@
 ﻿using BookStore.Data;
 using BookStore.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -133,7 +134,12 @@ namespace BookStore.Repository
             uBook.bookGallery = new List<BookGallery>();
             foreach (var file in model.Gallery)
             {
-                uBook.bookGallery.Select(g => new GalleryModel()
+
+                //uBook.bookGallery.First().Id = file.Id;
+                //uBook.bookGallery.First().Name = file.Name;
+                //uBook.bookGallery.First().URL = file.URL;
+
+                uBook.bookGallery.Where(b => b.Id == model.Id).ToList().Add(new BookGallery()
                 {
                     Name = file.Name,
                     URL = file.URL
@@ -153,6 +159,19 @@ namespace BookStore.Repository
             //  _context.SaveChanges();
             //return (int)result;
         }
-        
+
+        public async Task<int> Delete(int id)
+        {
+            //return await _context.books.Where(b => b.Id == id).
+
+
+            var deleteBook = _context.books.Where(d => d.Id == id).FirstOrDefault();
+
+           var result = _context.books.Remove(deleteBook);
+
+            await _context.SaveChangesAsync();
+
+            return deleteBook.Id;
+        }
     }
 }

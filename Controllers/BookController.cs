@@ -108,8 +108,8 @@ namespace BookStore.Controllers
 
         public async Task<ViewResult> EditBook(int id)
         {
-            var data = await _bookRepository.GetBookbyId(id);
-            var bookEdit = new BookModel()
+            BookModel data = await _bookRepository.GetBookbyId(id);
+            BookModel bookEdit = new BookModel
             {
                 Id = data.Id,
                 Author = data.Author,
@@ -118,6 +118,9 @@ namespace BookStore.Controllers
                 LanguageId = data.LanguageId,
                 Title = data.Title,
                 TotalPages = data.TotalPages,
+                //CoverImageUrl = data.CoverImageUrl,
+                //BookPdfUrl = data.BookPdfUrl,
+                //Gallery = data.Gallery,
                 existingCoverImagePath = data.CoverImageUrl,
                 //existingGalleryImagePath = data.g,
                 existingBookPdfPath = data.BookPdfUrl
@@ -132,17 +135,20 @@ namespace BookStore.Controllers
             {
                 if (bookModel.CoverPhoto != null)
                 {
-                    string folder = "books/cover/";
+                    string folder = "books/Cover/";
+                    //string file = bookModel.existingCoverImagePath;
 
                     if (bookModel.existingCoverImagePath != null)
                     {
-                        string filePath = Path.Combine(_webHostEnvironment.WebRootPath, folder, bookModel.existingCoverImagePath);
-                        if ((System.IO.File.Exists(filePath)))
-                        {
-                            System.IO.File.Delete(filePath);
-                        }
-                        
-                        
+                        //string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "books/Cover/");
+                        string filePath = Path.Join(_webHostEnvironment.WebRootPath, bookModel.existingCoverImagePath);
+                        System.IO.File.Delete(filePath);
+                        //if ((System.IO.File.Exists(filePath)))
+                        //{
+                        //    System.IO.File.Delete(filePath);
+                        //}
+
+
                     }
 
                     bookModel.CoverImageUrl = await UploadImage(folder, bookModel.CoverPhoto);
@@ -178,7 +184,7 @@ namespace BookStore.Controllers
 
                     if (bookModel.existingBookPdfPath != null)
                     {
-                        string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "books/pdf/", bookModel.existingBookPdfPath);
+                        string filePath = Path.Join(_webHostEnvironment.WebRootPath, bookModel.existingBookPdfPath);
                         if ((System.IO.File.Exists(filePath)))
                         {
                             System.IO.File.Delete(filePath);
@@ -193,7 +199,7 @@ namespace BookStore.Controllers
                 int id = await _bookRepository.UpdateBook(bookModel);
                 if (id > 0)
                 {
-                    return RedirectToAction(nameof(EditBook), new { isSuccess = true, bookID = id });
+                    return RedirectToAction("GetAllBooks", new { isSuccess = true, bookID = id });
                 }
             }
 
@@ -201,8 +207,10 @@ namespace BookStore.Controllers
             return View();
         }
 
-
-
+        public async Task<int> deleteBook(int id)
+        {
+            return await _bookRepository.Delete(id);           
+        }
 
         private async Task<string> UploadImage(string folderPath, IFormFile file)
         {
@@ -212,13 +220,10 @@ namespace BookStore.Controllers
             //for storing image url in database i have created CoverImageUrl property in BookModel and assigned it to folder.
             
 
-            string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folderPath);
+            string serverFolder = Path.Join(_webHostEnvironment.WebRootPath, folderPath);
 
-           
                 await file.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
-         
-            
-
+                   
             return "/" + folderPath;
         }
     }
